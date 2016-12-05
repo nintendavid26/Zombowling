@@ -139,7 +139,8 @@ public class MakeBlock : Editor
         if (GUILayout.Button("Add Spawn Point on Top"))
         {
             if (ZombieMaker.maker == null) { ZombieMaker.maker = GameObject.Find("Zombie Maker").GetComponent<ZombieMaker>(); }
-            ZombieMaker.maker.spawnPoints.Add(new Vector3(myBlock.transform.position.x, myBlock.transform.position.y + 5, myBlock.transform.position.z));
+            if (ConstantZombieMaking.instance == null) { ConstantZombieMaking.instance =FindObjectOfType<ConstantZombieMaking>(); }
+            ConstantZombieMaking.instance.spawnPoints.Add(new Vector3(myBlock.transform.position.x, myBlock.transform.position.y + 5, myBlock.transform.position.z));
         }
         //public Texture tex;
         // Texture tex;

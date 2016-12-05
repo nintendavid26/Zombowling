@@ -13,11 +13,11 @@ public static class ExtensionMethods
         return new Vector3(X, v.y, v.z);
 
     }
-    public static T RandomItemConditional<T>(this List<T> list, Predicate<T> condition=null)
+    public static T RandomItem<T>(this List<T> list, Predicate<T> condition=null)
     {
         List<T> temp = condition==null?list:list.FindAll(condition);
         if (temp.Count == 0) { return default(T); }
-        return temp[UnityEngine.Random.Range(0, list.Count - 1)];
+        return temp[UnityEngine.Random.Range(0, list.Count)];
 
     }
     public static Vector3 setY(this Vector3 v, float Y)
@@ -57,6 +57,14 @@ public static class ExtensionMethods
         {
             d.Add(l1[i], l2[i]);
         }
+
+    }
+
+    public static float DistanceIgnoreHeight(this Vector3 T,Vector3 Other)
+    {
+        Vector3 temp=T;
+        temp.y = Other.y;
+        return Vector3.Distance(temp, Other);
 
     }
 }

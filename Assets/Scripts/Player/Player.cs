@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
     public GameObject Hand;
     public ThrowableObject heldThrowableObject;
     public Rigidbody rb;
     public float throwingPower;
+    public int MaxHealth;
     public int Health;
     float distToGround;
     public float hitstun=0;
@@ -17,6 +19,10 @@ public class Player : MonoBehaviour {
     public List<Player> temp;
     public bool CanBeDamaged = true;
     public static Player main;
+    public Image BlurImage;
+    public Color32 Invisible;
+    public Image HealthBar;
+    public Text HealthText;
     // Use this for initialization
     void Start () {
         main = this;
@@ -33,6 +39,7 @@ public class Player : MonoBehaviour {
     void Update()
     {
         if (Input.GetMouseButtonDown(0) && heldThrowableObject != null) { heldThrowableObject.Thrown(this); }
+        //if (Input.GetMouseButtonDown(0) && heldThrowableObject == null) { Punch(); }
         if (Input.GetKeyDown("j"))
         {
             Debug.Log("Player Jump");
@@ -40,7 +47,15 @@ public class Player : MonoBehaviour {
             //rb.AddForce(Vector3.right * 1000);
         }
         if (hitstun > 0) { hitstun -= Time.deltaTime; }
-       // temp = AllPlayers.allPlayers.PlayerList;
+
+        HealthBar.fillAmount = (float)((float)Health / (float)MaxHealth);
+        HealthText.text = "HP " + Health + "/" + MaxHealth;
+        // temp = AllPlayers.allPlayers.PlayerList;
+    }
+
+    private void Punch()
+    {
+        throw new NotImplementedException();
     }
 
     public void Throw(ThrowableObject to) {
@@ -53,7 +68,16 @@ public class Player : MonoBehaviour {
         Debug.Log("Player got hit");
         if (col.gameObject.tag == "Zombie"){
             GetHit(col.gameObject.GetComponent<Zombie>());
-            
+        }
+        
+    }
+
+    public void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.tag == "Fire"&&CanBeDamaged)
+        {
+            Debug.Log("Fire");
+            TakeDamage(2);
         }
     }
     public void RemoveInvulnerability()
@@ -69,11 +93,36 @@ public class Player : MonoBehaviour {
         if (Physics.Raycast(transform.position, -Vector3.up, distToGround+0.1F)) { rb.AddForce(transform.up * zom.attack, ForceMode.Impulse); }
         rb.AddForce(-transform.forward * zom.attack*2, ForceMode.Impulse);
         rbfpc.m_Jump = true;
-        if (CanBeDamaged) {
-            Health -= zom.attack;
+        TakeDamage(zom.attack);
+
+    }
+    public void Blur(Color C)
+    {
+        Debug.Log("Blur");
+        StartCoroutine(BlurCamera(C));
+    }
+    public IEnumerator BlurCamera(Color c)
+    {
+        
+       BlurImage.color = c;
+       //yield return new WaitForEndOfFrame();
+        
+        while (BlurImage.color!=Invisible)
+        {
+            BlurImage.color = Color32.Lerp(BlurImage.color, Invisible, Time.deltaTime);
+
+            yield return new WaitForEndOfFrame();
+        }
+        
+    }
+
+    public void TakeDamage(int Amount)
+    {
+        if (CanBeDamaged)
+        {
+            Health -= Amount;
             CanBeDamaged = false;
             Invoke("RemoveInvulnerability", 3);
         }
-
     }
 }

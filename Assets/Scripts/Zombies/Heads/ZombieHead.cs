@@ -8,6 +8,7 @@ public class ZombieHead : ThrowableObject
 
     public Zombie zombie;
     public Texture texture;
+    public string texturePath = "Textures/Zombies/Heads/ZombieHead1";
     public string Name;
     public Renderer rend;
     public Material mat;
@@ -19,6 +20,7 @@ public class ZombieHead : ThrowableObject
         zombie = gameObject.transform.parent.gameObject.GetComponent<Zombie>();
         sc = gameObject.GetComponent<SphereCollider>();
         rend = GetComponent<Renderer>();
+        InitializeZombieHead();
         //renderer.material.
         //GetComponent<Renderer>().material.mainTexture = texture;
     }
@@ -37,8 +39,10 @@ public class ZombieHead : ThrowableObject
     void Update()
     {
         if (zombie != null) {
+            //float y=zombie.TargetPosition.y;
+         //y =(Mathf.Tan(360-zombie.transform.rotation.eulerAngles.x)*Mathf.PI/180)*Vector3.Distance(transform.position,zombie.TargetPosition);
+           // transform.LookAt(new Vector3(zombie.TargetPosition.x,y,zombie.TargetPosition.z));
             
-            //transform.LookAt(zombie.Target.transform);
         }
     }
 

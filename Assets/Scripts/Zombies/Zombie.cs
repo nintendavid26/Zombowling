@@ -14,81 +14,61 @@ public class Zombie : MonoBehaviour
     public float speed;
     public int attack;
     public GameObject Target;
-    public Texture texture;
+    public Vector3 TargetPosition;
     public string Name;
     public Renderer rend;
-    public Material mat;
     public static int numberOfZombies = 0;
+    public static List<Zombie> AllZombies=new List<Zombie>();
     public GameObject closestTarget;
     public float distToGround;
+    bool LookedAtTarget=false;
 
     // Use this for initialization
 
-    public virtual void Start()
+    void Start()
     {
+        InitializeZombie();
+    }
+
+    public virtual Zombie InitializeZombie()
+    {
+        AllZombies.Add(this);
         fade = GetComponent<FadeObjectInOut>();
         fade.FadeIn();
         rb = gameObject.GetComponent<Rigidbody>();
         center = rb.centerOfMass;
         rb.centerOfMass = Vector3.down * 0.7F;
-      //  Debug.Log("Changed Center");
-      // texture=Resources.Load("Assets/Textures/Zombie Head1") as Texture;
-        //Target = Player.Player1.tra;
-        // GetComponent<Renderer>().material.mainTexture = texture;
-        //Debug.Log("Zombie Start");
         numberOfZombies++;
         distToGround = GetComponent<Collider>().bounds.extents.y;
-        try
-        { Target = AllPlayers.allPlayers.PlayerList[0].gameObject; }
-        catch (Exception e) { Debug.LogWarning(e+". Player List not set"); }
-        InvokeRepeating("checkClosestTarget", 1, 2);
-    }
-
-    public virtual Zombie InitializeZombie()
-    {
+        InvokeRepeating("GetTarget", 1, 2);
         return this;
     }
 
-    //public Zombie() { }
-
-    // Update is called once per frame
     void Update()
     {
       
-        //if () { }
-        // transform.LookAt(Player.Player1.transform.);
-        //agent.SetDestination(Player.Player1.transform.position);
-        if (!dead) {
-            
+        if (!dead) {      
             float step = speed * Time.deltaTime;
-            try
-            { if (Target == null && AllPlayers.allPlayers.PlayerList[0].gameObject != null) { Target = AllPlayers.allPlayers.PlayerList[0].gameObject; } }
-            catch(Exception e)
-            {
-                Debug.LogWarning(e);
-            }
-            if (Target.tag=="Meat Head") { transform.position = Vector3.MoveTowards(transform.position, Target.transform.position, step*2); }
-            else { transform.position = Vector3.MoveTowards(transform.position, Target.transform.position, step); }
+            if (Target!=null&&Target.tag=="Meat Head") { transform.position = Vector3.MoveTowards(transform.position, Target.transform.position, step*2); }
+            else { transform.position = Vector3.MoveTowards(transform.position, TargetPosition, step); }
 
         }
     }
 
-    public void Die()
+    public virtual void Die()
     {
         rb.centerOfMass = center;
-        //Debug.Log("COM reset");
         dead = true;
         fade.FadeOut();
         gameObject.layer = 8;
         numberOfZombies--;
-       // GetComponent<Collider>().isTrigger = true;
+        AllZombies.Remove(this);
         Invoke("destroy", 7);
     }
 
     public void destroy()
     {
-      //  Debug.Log("Destroyed");
-        Destroy(this.gameObject);
+        Destroy(gameObject);
     }
 
     void OnTriggerStay(Collider col)
@@ -114,14 +94,44 @@ public class Zombie : MonoBehaviour
         return Name + "-" + Head.Name + "-Zombie";
 
     }
-    public void checkClosestTarget()
+    public void GetTarget()
     {
-        for (int x = 0; x < AllPlayers.allPlayers.PlayerList.Capacity - 1; x++)
+        if (Target == null)
         {
-            try {
-                if (Vector3.Distance(transform.position, AllPlayers.allPlayers.PlayerList[x].transform.position) < Vector3.Distance(transform.position, Target.transform.position)) { closestTarget = AllPlayers.allPlayers.PlayerList[x].gameObject; }
-            }
-            catch (Exception e) { Debug.Log(e); }
+           
         }
-    }
+        else if (Target.GetComponent<MeatHead>()) { }
+        if (Level.CurrentLevel.GetComponent<DefendTheBase>())
+        {
+            if (Vector3.Distance(transform.position,TargetPosition)<1) {
+                TargetPosition = UnityEngine.Random.insideUnitCircle * 7;
+                TargetPosition = new Vector3(TargetPosition.x,1,TargetPosition.y);
+                Target = null; }
+            else {
+                Target = Level.CurrentLevel.GetComponent<DefendTheBase>().Base.gameObject;
+            }
+        }
+        else {
+            Debug.Log("no");
+            for (int x = 0; x < AllPlayers.allPlayers.PlayerList.Capacity - 1; x++)
+            {
+                try
+                {
+                    if (Vector3.Distance(transform.position, AllPlayers.allPlayers.PlayerList[x].transform.position) < Vector3.Distance(transform.position, Target.transform.position)) { closestTarget = AllPlayers.allPlayers.PlayerList[x].gameObject; }
+                }
+                catch (Exception e) { Debug.Log(e); }
+            }
+        }
+        if (Target != null)
+        {
+            TargetPosition = Target.transform.position;
+        }
+    } 
+
+
+
+    public void setStats(float speed,int attack)
+    {
+
+    } 
 }

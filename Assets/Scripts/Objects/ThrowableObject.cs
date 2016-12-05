@@ -13,6 +13,7 @@ public class ThrowableObject : MonoBehaviour
     public FadeObjectInOut fade;
     public float mass;
     public GameObject ground;
+    public Player Holder;
     // Use this for initialization
    public virtual void Start()
     {
@@ -21,7 +22,7 @@ public class ThrowableObject : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    public void GetPickedUp(Player picker){
+    public virtual void GetPickedUp(Player picker){
 
         gameObject.transform.position = picker.Hand.transform.position;
         gameObject.transform.parent = picker.Hand.transform;
@@ -80,6 +81,14 @@ public class ThrowableObject : MonoBehaviour
     void Update()
     {
 
+    }
+
+    void OnDestroy()
+    {
+        if (Holder != null)
+        {
+            Holder.heldThrowableObject = null;
+        }
     }
 
     public virtual void OnHitGroundFromThrow()

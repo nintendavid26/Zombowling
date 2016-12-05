@@ -23,6 +23,7 @@ public class MeatHead : ZombieHead {
     {
         smellRadius = 40;
         gameObject.tag = "Meat Head";
+        base.InitializeZombieHead();
         return this as MeatHead;
     }
 

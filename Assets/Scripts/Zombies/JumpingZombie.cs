@@ -4,22 +4,17 @@ using System.Collections;
 public class JumpingZombie : Zombie {
 
 
-    public float MaxJumpForce,MinJumpForce;
-    public override void Start()
-    {
-        base.Start();
-        //texture = Resources.Load("Assets/Textures/Zombie Body1-Jump") as Texture;
-       // Debug.Log(texture);
-        int x = Random.Range(2, 5);
-        int y = Random.Range(2, 5);
-        InvokeRepeating("Jump", x, y);
-    }
+    public float MaxJumpForce=1,MinJumpForce=4;
+    public bool ShouldJump;
     public override Zombie InitializeZombie()
     {
-        MaxJumpForce=4000;
-        MinJumpForce = 2000;
+        base.InitializeZombie();
+        int x = Random.Range(2, 6);
+        int y = Random.Range(1, 6);
+        InvokeRepeating("Jump", x, y);
         return this;
     }
+
 
 
     public void Jump(Vector3 direction,float Force) {
@@ -37,7 +32,7 @@ public class JumpingZombie : Zombie {
 
     public void Jump()
     {
-
-        if (Grounded()) { rb.AddForce(Vector3.up * Random.Range(MinJumpForce, MaxJumpForce)); }
+        if (rb == null) { Debug.Log("rb is null"); }
+        if (Grounded()) { rb.AddForce(Vector3.up * 2000); }
     }
 }

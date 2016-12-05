@@ -17,13 +17,15 @@ public class ExplodingHead : ZombieHead {
 
     public override void Start()
     {
+        //ExplosionEffect = Resources.Load("Explosions/Explosion02") as GameObject;
         base.Start();
         oldZombieAttack = zombie.attack;
 
     }
     public override ZombieHead InitializeZombieHead()
     {
-        ExplosionEffect = ZombieMaker.maker.szha.Explosion;
+        // ExplosionEffect = ZombieMaker.maker.szha.Explosion;
+        base.InitializeZombieHead();
         ExplosionForce = 80;
         ExplosionRadius = 15;
         return this as ExplodingHead;
@@ -31,7 +33,7 @@ public class ExplodingHead : ZombieHead {
 
     public void Explode()
     {
-        Instantiate(ExplosionEffect, transform.position, transform.rotation);
+        Destroy(Instantiate(ExplosionEffect, transform.position, transform.rotation),5);
         Collider[] colliders = Physics.OverlapSphere(transform.position, ExplosionRadius);
 
         foreach (Collider c in colliders)

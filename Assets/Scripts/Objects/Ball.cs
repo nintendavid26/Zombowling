@@ -29,7 +29,6 @@ public class Ball : ThrowableObject {
         { if (col.gameObject.tag.Contains("Player") && currentState == State.Rolling && col.gameObject.transform.parent.GetComponent<Player>().heldThrowableObject == null)
             {
                 GetPickedUp(col.gameObject.transform.parent.GetComponent<Player>());
-                Debug.Log(col.gameObject.name);
             }
 
         }

@@ -1,10 +1,18 @@
 fileFormatVersion: 2
 guid: 404b36e27d1714b43b0b827532ba1a89
-timeCreated: 1458487060
+timeCreated: 1480434656
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - rb: {instanceID: 0}
+  - sc: {instanceID: 0}
+  - fade: {instanceID: 0}
+  - ground: {instanceID: 0}
+  - zombie: {instanceID: 0}
+  - texture: {fileID: 2800000, guid: ace4370cd94a0bb4bb0798feac538bbe, type: 3}
+  - rend: {instanceID: 0}
+  - mat: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
